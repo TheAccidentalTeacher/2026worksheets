@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { renderWorksheetToPdf, isTemplateSupported } from '@/lib/pdf/renderer';
 import { WorksheetType, GradeLevel } from '@/types/worksheet';
 import { generateWorksheet } from '@/lib/services/worksheet-generator';
+import { HeaderConfig, FooterConfig } from '@/types/branding';
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,6 +14,7 @@ export async function POST(request: NextRequest) {
       worksheetType, 
       additionalInstructions,
       options = {},
+      branding = {},
     } = body;
 
     // Validate required fields
@@ -60,12 +62,16 @@ export async function POST(request: NextRequest) {
 
     console.log(`[PDF API] Content generated, rendering PDF...`);
 
-    // Step 2: Render to PDF
+    // Step 2: Render to PDF with branding
     const pdfBuffer = await renderWorksheetToPdf({
       worksheetType: worksheetType as WorksheetType,
       content: worksheet.content,
       assets: worksheet.assets,
       options,
+      branding: {
+        headerConfig: branding.headerConfig as Partial<HeaderConfig>,
+        footerConfig: branding.footerConfig as Partial<FooterConfig>,
+      },
     });
 
     console.log(`[PDF API] PDF rendered: ${pdfBuffer.length} bytes`);

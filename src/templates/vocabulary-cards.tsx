@@ -4,9 +4,10 @@ import {
   WorksheetDocument,
   WorksheetPage,
   Header,
-  baseStyles,
+  HeaderConfig,
+  FooterConfig,
 } from '@/lib/pdf/base-components';
-import { fonts, fontSizes, colors, spacing } from '@/lib/pdf/fonts';
+import { fontSizes, colors, spacing } from '@/lib/pdf/fonts';
 import { GeneratedContent } from '@/lib/api/openai';
 import { ResolvedAsset } from '@/lib/assets/resolver';
 
@@ -114,6 +115,8 @@ interface VocabularyCardsProps {
   assets?: ResolvedAsset[];
   showImages?: boolean;
   cardStyle?: 'standard' | 'flashcard';
+  headerConfig?: Partial<HeaderConfig>;
+  footerConfig?: Partial<FooterConfig>;
 }
 
 /**
@@ -125,6 +128,8 @@ export const VocabularyCards: React.FC<VocabularyCardsProps> = ({
   assets = [],
   showImages = true,
   cardStyle = 'standard',
+  headerConfig,
+  footerConfig,
 }) => {
   const title = content.title || 'Vocabulary Cards';
   const items = content.items || [];
@@ -136,10 +141,11 @@ export const VocabularyCards: React.FC<VocabularyCardsProps> = ({
 
   return (
     <WorksheetDocument title={title}>
-      <WorksheetPage>
+      <WorksheetPage footerConfig={footerConfig}>
         <Header 
           title={title} 
           subtitle="Study these vocabulary words and their definitions"
+          config={headerConfig}
         />
         
         <View style={styles.cardsContainer}>

@@ -8,6 +8,7 @@ import {
 } from '@react-pdf/renderer';
 import { GeneratedContent } from '@/lib/api/openai';
 import { fonts, fontSizes, colors, pageDimensions, spacing } from '@/lib/pdf/fonts';
+import { Header, HeaderConfig, FooterConfig } from '@/lib/pdf/base-components';
 
 const styles = StyleSheet.create({
   page: {
@@ -157,9 +158,16 @@ interface FillInBlankContent extends GeneratedContent {
 interface FillInBlankProps {
   content: FillInBlankContent;
   showAnswerKey?: boolean;
+  headerConfig?: Partial<HeaderConfig>;
+  footerConfig?: Partial<FooterConfig>;
 }
 
-export function FillInBlank({ content, showAnswerKey = true }: FillInBlankProps) {
+export function FillInBlank({ 
+  content, 
+  showAnswerKey = true,
+  headerConfig,
+  footerConfig: _footerConfig,
+}: FillInBlankProps) {
   const { title, instructions, wordBank, passage, sentences, items, answerKey } = content;
 
   // Use either passage or items/sentences format
@@ -171,20 +179,11 @@ export function FillInBlank({ content, showAnswerKey = true }: FillInBlankProps)
     <Document>
       <Page size="LETTER" style={styles.page}>
         {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.title}>{title}</Text>
-          <Text style={styles.subtitle}>Fill in the Blanks</Text>
-          <View style={styles.nameSection}>
-            <View style={styles.nameField}>
-              <Text style={styles.nameLabel}>Name:</Text>
-              <View style={styles.nameLine} />
-            </View>
-            <View style={styles.nameField}>
-              <Text style={styles.nameLabel}>Date:</Text>
-              <View style={[styles.nameLine, { width: 100 }]} />
-            </View>
-          </View>
-        </View>
+        <Header 
+          title={title} 
+          subtitle="Fill in the Blanks"
+          config={headerConfig}
+        />
 
         {/* Instructions */}
         {instructions && (
@@ -246,10 +245,11 @@ export function FillInBlank({ content, showAnswerKey = true }: FillInBlankProps)
       {/* Answer Key Page */}
       {showAnswerKey && answerKey && answerKey.length > 0 && (
         <Page size="LETTER" style={styles.page}>
-          <View style={styles.header}>
-            <Text style={styles.title}>{title}</Text>
-            <Text style={styles.subtitle}>Answer Key</Text>
-          </View>
+          <Header 
+            title={title} 
+            subtitle="Answer Key"
+            config={{ ...headerConfig, showNameField: false, showDateField: false, showScoreField: false }}
+          />
 
           <Text style={styles.answerKeyTitle}>Answers</Text>
           

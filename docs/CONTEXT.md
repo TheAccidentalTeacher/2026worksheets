@@ -1,7 +1,7 @@
 # 📚 WORKSHEET GENERATOR - PROJECT CONTEXT DOCUMENT
 
 > **Last Updated:** January 17, 2026  
-> **Document Version:** 1.4.0  
+> **Document Version:** 1.5.0  
 > **Status:** Phase 7 - Additional Templates (In Progress)
 
 ---
@@ -1321,6 +1321,8 @@ npm run index-assets  # Index local Servier SMART assets
 
 | Date | Version | Changes | Author |
 |------|---------|---------|--------|
+| 2026-01-17 | 1.5.0 | Added customizable header/footer branding system with UI controls | AI Assistant |
+| 2026-01-17 | 1.4.0 | Added Multiple Choice, Fill-in-Blank, and Matching templates | AI Assistant |
 | 2026-01-17 | 1.3.0 | Phase 0 & 1 complete, Phase 3 partially complete, pushed to GitHub | AI Assistant |
 | 2026-01-17 | 1.2.0 | API testing complete, Servier deprioritized, elementary focus confirmed | AI Assistant |
 | 2026-01-17 | 1.1.0 | Added Servier SMART download info, linked to ASSET_INDEX.md | AI Assistant |

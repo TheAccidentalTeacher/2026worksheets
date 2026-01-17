@@ -2,6 +2,37 @@
 
 import { useState } from 'react';
 
+// Branding configuration state
+interface BrandingState {
+  // Header options
+  schoolName: string;
+  className: string;
+  teacherName: string;
+  showNameField: boolean;
+  showDateField: boolean;
+  showScoreField: boolean;
+  showPeriodField: boolean;
+  logoUrl: string;
+  // Footer options
+  copyrightText: string;
+  schoolWebsite: string;
+  showPageNumbers: boolean;
+}
+
+const defaultBranding: BrandingState = {
+  schoolName: '',
+  className: '',
+  teacherName: '',
+  showNameField: true,
+  showDateField: true,
+  showScoreField: false,
+  showPeriodField: false,
+  logoUrl: '',
+  copyrightText: '',
+  schoolWebsite: '',
+  showPageNumbers: true,
+};
+
 export default function Home() {
   const [topic, setTopic] = useState('Parts of a Flower');
   const [gradeLevel, setGradeLevel] = useState('3');
@@ -10,6 +41,29 @@ export default function Home() {
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  
+  // Branding state
+  const [showBrandingOptions, setShowBrandingOptions] = useState(false);
+  const [branding, setBranding] = useState<BrandingState>(defaultBranding);
+
+  // Build branding config for API calls
+  const buildBrandingConfig = () => ({
+    headerConfig: {
+      schoolName: branding.schoolName || undefined,
+      className: branding.className || undefined,
+      teacherName: branding.teacherName || undefined,
+      showNameField: branding.showNameField,
+      showDateField: branding.showDateField,
+      showScoreField: branding.showScoreField,
+      showPeriodField: branding.showPeriodField,
+      logoUrl: branding.logoUrl || undefined,
+    },
+    footerConfig: {
+      copyrightText: branding.copyrightText || undefined,
+      schoolWebsite: branding.schoolWebsite || undefined,
+      showPageNumbers: branding.showPageNumbers,
+    },
+  });
 
   const handleGenerateContent = async () => {
     setLoading(true);
@@ -62,6 +116,7 @@ export default function Home() {
           topic,
           gradeLevel,
           worksheetType,
+          branding: buildBrandingConfig(),
         }),
       });
 
@@ -167,6 +222,152 @@ export default function Home() {
                   <option value="labeled-diagram" disabled>🏷️ Labeled Diagram (coming soon)</option>
                 </select>
               </div>
+            </div>
+
+            {/* Branding/Customization Section */}
+            <div className="border border-gray-200 rounded-md">
+              <button
+                type="button"
+                onClick={() => setShowBrandingOptions(!showBrandingOptions)}
+                className="w-full px-4 py-3 text-left flex justify-between items-center hover:bg-gray-50"
+              >
+                <span className="font-medium text-gray-700">
+                  🎨 Customize Header & Footer
+                </span>
+                <span className="text-gray-400">
+                  {showBrandingOptions ? '▲' : '▼'}
+                </span>
+              </button>
+              
+              {showBrandingOptions && (
+                <div className="px-4 pb-4 space-y-4 border-t border-gray-100">
+                  {/* Header Options */}
+                  <div className="pt-4">
+                    <h4 className="text-sm font-semibold text-gray-600 mb-3">Header Information</h4>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs text-gray-500 mb-1">School Name</label>
+                        <input
+                          type="text"
+                          value={branding.schoolName}
+                          onChange={(e) => setBranding({ ...branding, schoolName: e.target.value })}
+                          className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                          placeholder="Lincoln Elementary"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs text-gray-500 mb-1">Class Name</label>
+                        <input
+                          type="text"
+                          value={branding.className}
+                          onChange={(e) => setBranding({ ...branding, className: e.target.value })}
+                          className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                          placeholder="3rd Grade Science"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs text-gray-500 mb-1">Teacher Name</label>
+                        <input
+                          type="text"
+                          value={branding.teacherName}
+                          onChange={(e) => setBranding({ ...branding, teacherName: e.target.value })}
+                          className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                          placeholder="Mrs. Johnson"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs text-gray-500 mb-1">Logo URL (optional)</label>
+                        <input
+                          type="url"
+                          value={branding.logoUrl}
+                          onChange={(e) => setBranding({ ...branding, logoUrl: e.target.value })}
+                          className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                          placeholder="https://..."
+                        />
+                      </div>
+                    </div>
+                    
+                    {/* Student Fields Toggle */}
+                    <div className="mt-3">
+                      <p className="text-xs text-gray-500 mb-2">Student Fields:</p>
+                      <div className="flex flex-wrap gap-4">
+                        <label className="flex items-center gap-1 text-sm">
+                          <input
+                            type="checkbox"
+                            checked={branding.showNameField}
+                            onChange={(e) => setBranding({ ...branding, showNameField: e.target.checked })}
+                            className="rounded"
+                          />
+                          Name
+                        </label>
+                        <label className="flex items-center gap-1 text-sm">
+                          <input
+                            type="checkbox"
+                            checked={branding.showDateField}
+                            onChange={(e) => setBranding({ ...branding, showDateField: e.target.checked })}
+                            className="rounded"
+                          />
+                          Date
+                        </label>
+                        <label className="flex items-center gap-1 text-sm">
+                          <input
+                            type="checkbox"
+                            checked={branding.showScoreField}
+                            onChange={(e) => setBranding({ ...branding, showScoreField: e.target.checked })}
+                            className="rounded"
+                          />
+                          Score
+                        </label>
+                        <label className="flex items-center gap-1 text-sm">
+                          <input
+                            type="checkbox"
+                            checked={branding.showPeriodField}
+                            onChange={(e) => setBranding({ ...branding, showPeriodField: e.target.checked })}
+                            className="rounded"
+                          />
+                          Period
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Footer Options */}
+                  <div className="pt-3 border-t border-gray-100">
+                    <h4 className="text-sm font-semibold text-gray-600 mb-3">Footer Information</h4>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs text-gray-500 mb-1">Copyright Text</label>
+                        <input
+                          type="text"
+                          value={branding.copyrightText}
+                          onChange={(e) => setBranding({ ...branding, copyrightText: e.target.value })}
+                          className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                          placeholder="© 2025 My School"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs text-gray-500 mb-1">School Website</label>
+                        <input
+                          type="url"
+                          value={branding.schoolWebsite}
+                          onChange={(e) => setBranding({ ...branding, schoolWebsite: e.target.value })}
+                          className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                          placeholder="www.myschool.edu"
+                        />
+                      </div>
+                    </div>
+                    <label className="flex items-center gap-2 mt-3 text-sm">
+                      <input
+                        type="checkbox"
+                        checked={branding.showPageNumbers}
+                        onChange={(e) => setBranding({ ...branding, showPageNumbers: e.target.checked })}
+                        className="rounded"
+                      />
+                      Show page numbers
+                    </label>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="flex gap-3 pt-4">

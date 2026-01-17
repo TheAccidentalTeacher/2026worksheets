@@ -8,6 +8,7 @@ import {
 } from '@react-pdf/renderer';
 import { GeneratedContent } from '@/lib/api/openai';
 import { fonts, fontSizes, colors, pageDimensions, spacing } from '@/lib/pdf/fonts';
+import { Header, HeaderConfig, FooterConfig } from '@/lib/pdf/base-components';
 
 const styles = StyleSheet.create({
   page: {
@@ -140,9 +141,16 @@ const styles = StyleSheet.create({
 interface MultipleChoiceProps {
   content: GeneratedContent;
   showAnswerKey?: boolean;
+  headerConfig?: Partial<HeaderConfig>;
+  footerConfig?: Partial<FooterConfig>;
 }
 
-export function MultipleChoice({ content, showAnswerKey = true }: MultipleChoiceProps) {
+export function MultipleChoice({ 
+  content, 
+  showAnswerKey = true,
+  headerConfig,
+  footerConfig: _footerConfig,
+}: MultipleChoiceProps) {
   const { title, instructions, items, answerKey } = content;
 
   // Split questions into pages (about 5 questions per page)
@@ -158,24 +166,11 @@ export function MultipleChoice({ content, showAnswerKey = true }: MultipleChoice
         <Page key={pageIndex} size="LETTER" style={styles.page}>
           {/* Header - only on first page */}
           {pageIndex === 0 && (
-            <View style={styles.header}>
-              <Text style={styles.title}>{title}</Text>
-              <Text style={styles.subtitle}>Multiple Choice Quiz</Text>
-              <View style={styles.nameSection}>
-                <View style={styles.nameField}>
-                  <Text style={styles.nameLabel}>Name:</Text>
-                  <View style={styles.nameLine} />
-                </View>
-                <View style={styles.nameField}>
-                  <Text style={styles.nameLabel}>Date:</Text>
-                  <View style={[styles.nameLine, { width: 100 }]} />
-                </View>
-                <View style={styles.nameField}>
-                  <Text style={styles.nameLabel}>Score:</Text>
-                  <View style={[styles.nameLine, { width: 60 }]} />
-                </View>
-              </View>
-            </View>
+            <Header 
+              title={title} 
+              subtitle="Multiple Choice Quiz"
+              config={headerConfig}
+            />
           )}
 
           {/* Instructions - only on first page */}
@@ -220,10 +215,11 @@ export function MultipleChoice({ content, showAnswerKey = true }: MultipleChoice
       {/* Answer Key Page */}
       {showAnswerKey && answerKey && answerKey.length > 0 && (
         <Page size="LETTER" style={styles.page}>
-          <View style={styles.header}>
-            <Text style={styles.title}>{title}</Text>
-            <Text style={styles.subtitle}>Answer Key</Text>
-          </View>
+          <Header 
+            title={title} 
+            subtitle="Answer Key"
+            config={{ ...headerConfig, showNameField: false, showDateField: false, showScoreField: false }}
+          />
 
           <Text style={styles.answerKeyTitle}>Answers</Text>
           

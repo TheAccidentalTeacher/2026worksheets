@@ -7,6 +7,7 @@ import { Matching } from '@/templates/matching';
 import { GeneratedContent } from '@/lib/api/openai';
 import { ResolvedAsset } from '@/lib/assets/resolver';
 import { WorksheetType } from '@/types/worksheet';
+import { HeaderConfig, FooterConfig } from '@/types/branding';
 
 // Import fonts to register them
 import '@/lib/pdf/fonts';
@@ -20,6 +21,10 @@ export interface RenderOptions {
     cardStyle?: 'standard' | 'flashcard';
     showAnswerKey?: boolean;
   };
+  branding?: {
+    headerConfig?: Partial<HeaderConfig>;
+    footerConfig?: Partial<FooterConfig>;
+  };
 }
 
 /**
@@ -28,7 +33,7 @@ export interface RenderOptions {
 export async function renderWorksheetToPdf(
   renderOptions: RenderOptions
 ): Promise<Buffer> {
-  const { worksheetType, content, assets, options } = renderOptions;
+  const { worksheetType, content, assets, options, branding } = renderOptions;
 
   // Build the React element based on worksheet type
   let element: React.ReactElement<DocumentProps>;
@@ -40,6 +45,8 @@ export async function renderWorksheetToPdf(
         assets,
         showImages: options?.showImages ?? true,
         cardStyle: options?.cardStyle ?? 'standard',
+        headerConfig: branding?.headerConfig,
+        footerConfig: branding?.footerConfig,
       }) as React.ReactElement<DocumentProps>;
       break;
 
@@ -47,6 +54,8 @@ export async function renderWorksheetToPdf(
       element = React.createElement(MultipleChoice, {
         content,
         showAnswerKey: options?.showAnswerKey ?? true,
+        headerConfig: branding?.headerConfig,
+        footerConfig: branding?.footerConfig,
       }) as React.ReactElement<DocumentProps>;
       break;
 
@@ -54,6 +63,8 @@ export async function renderWorksheetToPdf(
       element = React.createElement(FillInBlank, {
         content,
         showAnswerKey: options?.showAnswerKey ?? true,
+        headerConfig: branding?.headerConfig,
+        footerConfig: branding?.footerConfig,
       }) as React.ReactElement<DocumentProps>;
       break;
 
@@ -61,6 +72,8 @@ export async function renderWorksheetToPdf(
       element = React.createElement(Matching, {
         content,
         showAnswerKey: options?.showAnswerKey ?? true,
+        headerConfig: branding?.headerConfig,
+        footerConfig: branding?.footerConfig,
       }) as React.ReactElement<DocumentProps>;
       break;
 

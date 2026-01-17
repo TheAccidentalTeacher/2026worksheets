@@ -1,6 +1,12 @@
 import React from 'react';
-import { Document, Page, View, Text, StyleSheet } from '@react-pdf/renderer';
+import { Document, Page, View, Text, Image, StyleSheet } from '@react-pdf/renderer';
 import { fonts, fontSizes, colors, spacing, pageDimensions } from './fonts';
+import { 
+  HeaderConfig, 
+  FooterConfig, 
+  mergeHeaderConfig, 
+  mergeFooterConfig 
+} from '@/types/branding';
 
 // Base styles used across all templates
 export const baseStyles = StyleSheet.create({
@@ -138,31 +144,118 @@ export const baseStyles = StyleSheet.create({
 interface HeaderProps {
   title: string;
   subtitle?: string;
-  showNameDate?: boolean;
+  showNameDate?: boolean;  // Legacy prop - use config instead
+  config?: Partial<HeaderConfig>;
 }
 
 export const Header: React.FC<HeaderProps> = ({ 
   title, 
   subtitle, 
-  showNameDate = true 
-}) => (
-  <View style={baseStyles.header}>
-    <Text style={baseStyles.title}>{title}</Text>
-    {subtitle && <Text style={baseStyles.subtitle}>{subtitle}</Text>}
-    {showNameDate && (
-      <View style={baseStyles.nameDate}>
-        <View style={baseStyles.nameDateField}>
-          <Text style={baseStyles.nameDateLabel}>Name:</Text>
-          <View style={baseStyles.nameDateLine} />
+  showNameDate = true,
+  config: userConfig,
+}) => {
+  const config = mergeHeaderConfig(userConfig);
+  const accentColor = config.accentColor || colors.primary;
+  
+  // Determine which fields to show
+  const showName = config.showNameField ?? showNameDate;
+  const showDate = config.showDateField ?? showNameDate;
+  const showScore = config.showScoreField ?? false;
+  const showPeriod = config.showPeriodField ?? false;
+  
+  // Count how many fields we're showing
+  const fieldCount = [showName, showDate, showScore, showPeriod].filter(Boolean).length;
+  
+  // Build dynamic styles
+  const dynamicHeaderStyle = {
+    marginBottom: config.style === 'minimal' ? spacing.md : config.style === 'compact' ? spacing.sm : spacing.lg,
+    borderBottomWidth: config.style === 'minimal' ? 0 : 2,
+    borderBottomColor: config.accentColor || colors.lightGray,
+    paddingBottom: config.style === 'compact' ? spacing.sm : spacing.md,
+  };
+  
+  const dynamicTitleStyle = {
+    fontFamily: 'Helvetica-Bold' as const,
+    fontSize: fontSizes.title,
+    color: config.accentColor || colors.black,
+    marginBottom: spacing.sm,
+  };
+  
+  return (
+    <View style={dynamicHeaderStyle}>
+      {/* Logo and School Name Row */}
+      {(config.logoUrl || config.schoolName) && (
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: spacing.sm }}>
+          {config.logoUrl && (
+            <Image 
+              src={config.logoUrl} 
+              style={{ width: 40, height: 40, marginRight: spacing.sm }} 
+            />
+          )}
+          {config.schoolName && (
+            <Text style={{ fontSize: fontSizes.small, color: colors.darkGray }}>
+              {config.schoolName}
+            </Text>
+          )}
+          {config.className && (
+            <Text style={{ fontSize: fontSizes.small, color: colors.mediumGray, marginLeft: 'auto' }}>
+              {config.className}
+            </Text>
+          )}
         </View>
-        <View style={baseStyles.nameDateField}>
-          <Text style={baseStyles.nameDateLabel}>Date:</Text>
-          <View style={baseStyles.nameDateLine} />
+      )}
+      
+      {/* Teacher Name Row (if provided) */}
+      {config.teacherName && (
+        <Text style={{ fontSize: fontSizes.small, color: colors.darkGray, marginBottom: spacing.xs }}>
+          {config.teacherName}
+        </Text>
+      )}
+      
+      {/* Title */}
+      <Text style={dynamicTitleStyle}>
+        {title}
+      </Text>
+      
+      {/* Subtitle or custom subtitle */}
+      {(subtitle || config.customSubtitle) && (
+        <Text style={baseStyles.subtitle}>
+          {config.customSubtitle || subtitle}
+        </Text>
+      )}
+      
+      {/* Student Fields Row */}
+      {fieldCount > 0 && (
+        <View style={baseStyles.nameDate}>
+          {showName && (
+            <View style={baseStyles.nameDateField}>
+              <Text style={baseStyles.nameDateLabel}>Name:</Text>
+              <View style={baseStyles.nameDateLine} />
+            </View>
+          )}
+          {showDate && (
+            <View style={baseStyles.nameDateField}>
+              <Text style={baseStyles.nameDateLabel}>Date:</Text>
+              <View style={baseStyles.nameDateLine} />
+            </View>
+          )}
+          {showPeriod && (
+            <View style={baseStyles.nameDateField}>
+              <Text style={baseStyles.nameDateLabel}>{config.period ? config.period : 'Period:'}</Text>
+              {!config.period && <View style={baseStyles.nameDateLine} />}
+            </View>
+          )}
+          {showScore && (
+            <View style={baseStyles.nameDateField}>
+              <Text style={baseStyles.nameDateLabel}>Score:</Text>
+              <View style={baseStyles.nameDateLine} />
+            </View>
+          )}
         </View>
-      </View>
-    )}
-  </View>
-);
+      )}
+    </View>
+  );
+};
 
 // Instructions component
 interface InstructionsProps {
@@ -177,24 +270,78 @@ export const Instructions: React.FC<InstructionsProps> = ({ text }) => (
 
 // Footer component with attribution and page number
 interface FooterProps {
-  attribution?: string;
-  showPageNumber?: boolean;
+  attribution?: string;  // Legacy prop - use config instead
+  showPageNumber?: boolean;  // Legacy prop - use config instead
+  config?: Partial<FooterConfig>;
 }
 
 export const Footer: React.FC<FooterProps> = ({ 
-  attribution = 'Generated by Worksheet Generator',
-  showPageNumber = true,
-}) => (
-  <View style={baseStyles.footer} fixed>
-    <Text style={baseStyles.footerText}>{attribution}</Text>
-    {showPageNumber && (
-      <Text 
-        style={baseStyles.pageNumber}
-        render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
-      />
-    )}
-  </View>
-);
+  attribution,
+  showPageNumber,
+  config: userConfig,
+}) => {
+  const config = mergeFooterConfig(userConfig);
+  
+  // Handle legacy props
+  const finalAttribution = attribution ?? config.attribution;
+  const finalShowPages = showPageNumber ?? config.showPageNumbers;
+  
+  // Don't render if style is 'none'
+  if (config.style === 'none') {
+    return null;
+  }
+  
+  const isMinimal = config.style === 'minimal';
+  
+  // Build dynamic footer style
+  const dynamicFooterStyle = {
+    position: 'absolute' as const,
+    bottom: spacing.lg,
+    left: pageDimensions.margin,
+    right: pageDimensions.margin,
+    flexDirection: 'row' as const,
+    justifyContent: 'space-between' as const,
+    borderTopWidth: isMinimal ? 0 : 1,
+    borderTopColor: colors.lightGray,
+    paddingTop: spacing.sm,
+  };
+  
+  return (
+    <View style={dynamicFooterStyle} fixed>
+      {/* Left side: Logo, attribution, or copyright */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
+        {config.logoUrl && (
+          <Image 
+            src={config.logoUrl} 
+            style={{ width: 16, height: 16 }} 
+          />
+        )}
+        {config.copyrightText ? (
+          <Text style={baseStyles.footerText}>{config.copyrightText}</Text>
+        ) : config.showAttribution !== false && finalAttribution ? (
+          <Text style={baseStyles.footerText}>{finalAttribution}</Text>
+        ) : null}
+      </View>
+      
+      {/* Right side: Website and/or page numbers */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
+        {config.schoolWebsite && (
+          <Text style={baseStyles.footerText}>{config.schoolWebsite}</Text>
+        )}
+        {finalShowPages && (
+          <Text 
+            style={baseStyles.pageNumber}
+            render={({ pageNumber, totalPages }) => 
+              config.pageNumberFormat === 'simple' 
+                ? `${pageNumber}` 
+                : `Page ${pageNumber} of ${totalPages}`
+            }
+          />
+        )}
+      </View>
+    </View>
+  );
+};
 
 // Word bank component
 interface WordBankProps {
@@ -237,16 +384,22 @@ export const WorksheetDocument: React.FC<WorksheetDocumentProps> = ({
 interface WorksheetPageProps {
   children: React.ReactNode;
   showFooter?: boolean;
+  footerConfig?: Partial<FooterConfig>;
 }
 
 export const WorksheetPage: React.FC<WorksheetPageProps> = ({ 
   children,
   showFooter = true,
+  footerConfig,
 }) => (
   <Page size="LETTER" style={baseStyles.page}>
     <View style={baseStyles.content}>
       {children}
     </View>
-    {showFooter && <Footer />}
+    {showFooter && <Footer config={footerConfig} />}
   </Page>
 );
+
+// Export types for use in templates
+export type { HeaderConfig, FooterConfig } from '@/types/branding';
+export { presets, defaultHeaderConfig, defaultFooterConfig } from '@/types/branding';

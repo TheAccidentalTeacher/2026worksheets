@@ -8,6 +8,7 @@ import {
 } from '@react-pdf/renderer';
 import { GeneratedContent } from '@/lib/api/openai';
 import { fonts, fontSizes, colors, pageDimensions, spacing } from '@/lib/pdf/fonts';
+import { Header, HeaderConfig, FooterConfig } from '@/lib/pdf/base-components';
 
 const styles = StyleSheet.create({
   page: {
@@ -167,6 +168,8 @@ const styles = StyleSheet.create({
 interface MatchingProps {
   content: GeneratedContent;
   showAnswerKey?: boolean;
+  headerConfig?: Partial<HeaderConfig>;
+  footerConfig?: Partial<FooterConfig>;
 }
 
 // Shuffle array using Fisher-Yates
@@ -179,7 +182,12 @@ function shuffleArray<T>(array: T[]): T[] {
   return shuffled;
 }
 
-export function Matching({ content, showAnswerKey = true }: MatchingProps) {
+export function Matching({ 
+  content, 
+  showAnswerKey = true,
+  headerConfig,
+  footerConfig: _footerConfig,
+}: MatchingProps) {
   const { title, instructions, items } = content;
 
   // Create shuffled definitions (Column B)
@@ -206,24 +214,11 @@ export function Matching({ content, showAnswerKey = true }: MatchingProps) {
     <Document>
       <Page size="LETTER" style={styles.page}>
         {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.title}>{title}</Text>
-          <Text style={styles.subtitle}>Matching</Text>
-          <View style={styles.nameSection}>
-            <View style={styles.nameField}>
-              <Text style={styles.nameLabel}>Name:</Text>
-              <View style={styles.nameLine} />
-            </View>
-            <View style={styles.nameField}>
-              <Text style={styles.nameLabel}>Date:</Text>
-              <View style={[styles.nameLine, { width: 100 }]} />
-            </View>
-            <View style={styles.nameField}>
-              <Text style={styles.nameLabel}>Score:</Text>
-              <View style={[styles.nameLine, { width: 60 }]} />
-            </View>
-          </View>
-        </View>
+        <Header 
+          title={title} 
+          subtitle="Matching"
+          config={headerConfig}
+        />
 
         {/* Instructions */}
         <View style={styles.instructions}>
@@ -270,10 +265,11 @@ export function Matching({ content, showAnswerKey = true }: MatchingProps) {
       {/* Answer Key Page */}
       {showAnswerKey && (
         <Page size="LETTER" style={styles.page}>
-          <View style={styles.header}>
-            <Text style={styles.title}>{title}</Text>
-            <Text style={styles.subtitle}>Answer Key</Text>
-          </View>
+          <Header 
+            title={title} 
+            subtitle="Answer Key"
+            config={{ ...headerConfig, showNameField: false, showDateField: false, showScoreField: false }}
+          />
 
           <Text style={styles.answerKeyTitle}>Answers</Text>
           
