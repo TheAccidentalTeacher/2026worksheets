@@ -483,7 +483,252 @@ Final Output: Professional worksheet PDF
 
 ---
 
-## 📝 PROMPT ENGINEERING NOTES
+## �️ STEP-BY-STEP TEMPLATE IMPLEMENTATION
+
+### Implementation Checklist (Per Template)
+
+Each template requires these steps:
+1. ⬜ Add prompt to `src/lib/api/openai.ts`
+2. ⬜ Create template component in `src/templates/{name}.tsx`
+3. ⬜ Register in `src/templates/index.ts`
+4. ⬜ Add case to `src/lib/pdf/renderer.ts`
+5. ⬜ Add to UI dropdown in `src/app/page.tsx`
+6. ⬜ Test with 3+ different subjects
+
+---
+
+### TEMPLATE 1: Vocabulary Cards ✅ COMPLETE
+**File:** `src/templates/vocabulary-cards.tsx`
+**Status:** Working with Freepik images
+
+| Step | Status | File |
+|------|--------|------|
+| Prompt | ✅ | `openai.ts` → `vocabulary-cards` |
+| Template | ✅ | `vocabulary-cards.tsx` |
+| Registry | ✅ | `index.ts` |
+| Renderer | ✅ | `renderer.ts` |
+| UI | ✅ | `page.tsx` |
+| Testing | ✅ | "Parts of a Flower" verified |
+
+---
+
+### TEMPLATE 2: Multiple Choice ✅ COMPLETE
+**File:** `src/templates/multiple-choice.tsx`
+**Complexity:** Easy
+**Works for:** ALL subjects
+
+**Layout:**
+```
+┌─────────────────────────────────────┐
+│ [Topic Title]                       │
+│ Grade: X    Name: ____________      │
+├─────────────────────────────────────┤
+│                                     │
+│ 1. Question text here?              │
+│    A) Option A                      │
+│    B) Option B                      │
+│    C) Option C                      │
+│    D) Option D                      │
+│                                     │
+│ 2. Another question?                │
+│    A) Option A                      │
+│    ...                              │
+│                                     │
+│ [Optional: Small illustration]      │
+└─────────────────────────────────────┘
+```
+
+| Step | Status | Notes |
+|------|--------|-------|
+| Prompt | ✅ | Generate 5 questions with 4 options each |
+| Template | ✅ | List layout with answer circles, answer key page |
+| Registry | ✅ | Added to templates/index.ts |
+| Renderer | ✅ | Added case in renderer.ts |
+| UI | ✅ | Added to dropdown |
+| Testing | 🔄 | Ready for testing |
+
+---
+
+### TEMPLATE 3: Fill-in-the-Blank ✅ COMPLETE
+**File:** `src/templates/fill-in-blank.tsx`
+**Complexity:** Easy
+**Works for:** ALL subjects
+
+**Layout:**
+```
+┌─────────────────────────────────────┐
+│ [Topic Title]                       │
+│ Word Bank: [word1] [word2] [word3]  │
+├─────────────────────────────────────┤
+│                                     │
+│ 1. The _______ is the part of the   │
+│    plant that makes food.           │
+│                                     │
+│ 2. Water is absorbed by the _______.│
+│                                     │
+│ [Optional: Related illustration]    │
+└─────────────────────────────────────┘
+```
+
+| Step | Status | Notes |
+|------|--------|-------|
+| Prompt | ✅ | Generate passage with blanks + word bank |
+| Template | ✅ | Supports passage or sentence format, word bank |
+| Registry | ✅ | Added to templates/index.ts |
+| Renderer | ✅ | Added case in renderer.ts |
+| UI | ✅ | Added to dropdown |
+| Testing | 🔄 | Ready for testing |
+
+---
+
+### TEMPLATE 4: Matching ✅ COMPLETE
+**File:** `src/templates/matching.tsx`
+**Complexity:** Easy
+**Works for:** ALL subjects
+
+**Layout:**
+```
+┌─────────────────────────────────────┐
+│ [Topic Title]                       │
+│ Draw a line to match each term      │
+├─────────────────────────────────────┤
+│                                     │
+│ Column A          Column B          │
+│ ─────────         ─────────         │
+│ 1. Term 1    ●    ● Definition A    │
+│ 2. Term 2    ●    ● Definition B    │
+│ 3. Term 3    ●    ● Definition C    │
+│ ...                                 │
+│                                     │
+└─────────────────────────────────────┘
+```
+
+| Step | Status | Notes |
+|------|--------|-------|
+| Prompt | ✅ | Generate 8 term-definition pairs |
+| Template | ✅ | Two-column layout, auto-shuffles definitions |
+| Registry | ✅ | Added to templates/index.ts |
+| Renderer | ✅ | Added case in renderer.ts |
+| UI | ✅ | Added to dropdown |
+| Testing | 🔄 | Ready for testing |
+
+---
+
+### TEMPLATE 5: Labeled Diagram ⬜ PENDING
+**File:** `src/templates/labeled-diagram.tsx`
+**Complexity:** Medium
+**Works for:** Science, Geography, Music, History
+
+**Layout:**
+```
+┌─────────────────────────────────────┐
+│ [Topic Title]                       │
+│ Label the parts of the [subject]    │
+├─────────────────────────────────────┤
+│                                     │
+│    ┌──────────────────────┐         │
+│    │    [Main Image]       │  1. ___│
+│    │      with numbered    │  2. ___│
+│    │      callout arrows   │  3. ___│
+│    │                       │  4. ___│
+│    └──────────────────────┘  5. ___│
+│                                     │
+│ Word Bank: [part1] [part2] [part3]  │
+└─────────────────────────────────────┘
+```
+
+| Step | Status | Notes |
+|------|--------|-------|
+| Prompt | ✅ | Already in openai.ts (needs update) |
+| Template | ⬜ | Image with numbered lines |
+| Registry | ⬜ | Add to templates/index.ts |
+| Renderer | ⬜ | Add case in renderer.ts |
+| UI | ⬜ | Add to dropdown |
+| Testing | ⬜ | Test: Flower, Cell, Map, Instrument |
+
+---
+
+### TEMPLATE 6: Reading Comprehension ⬜ FUTURE
+**File:** `src/templates/reading-comprehension.tsx`
+**Complexity:** Medium
+**Works for:** ELA, Social Studies, Science
+
+| Step | Status | Notes |
+|------|--------|-------|
+| Prompt | ⬜ | Generate passage + 5-8 questions |
+| Template | ⬜ | Passage box + numbered questions |
+| Registry | ⬜ | |
+| Renderer | ⬜ | |
+| UI | ⬜ | |
+| Testing | ⬜ | |
+
+---
+
+### TEMPLATE 7: Word Search ⬜ FUTURE
+**File:** `src/templates/word-search.tsx`
+**Complexity:** Medium (grid generation)
+**Works for:** ALL subjects
+
+| Step | Status | Notes |
+|------|--------|-------|
+| Prompt | ⬜ | Generate vocabulary list |
+| Template | ⬜ | Letter grid with word list |
+| Registry | ⬜ | |
+| Renderer | ⬜ | |
+| UI | ⬜ | |
+| Testing | ⬜ | |
+
+---
+
+### TEMPLATE 8: Sequencing ⬜ FUTURE
+**File:** `src/templates/sequencing.tsx`
+**Complexity:** Easy
+**Works for:** Science, History, ELA
+
+| Step | Status | Notes |
+|------|--------|-------|
+| Prompt | ⬜ | Generate ordered steps (returned shuffled) |
+| Template | ⬜ | Numbered boxes to reorder |
+| Registry | ⬜ | |
+| Renderer | ⬜ | |
+| UI | ⬜ | |
+| Testing | ⬜ | |
+
+---
+
+### TEMPLATE 9: Comparison Chart ⬜ FUTURE
+**File:** `src/templates/comparison-chart.tsx`
+**Complexity:** Easy
+**Works for:** ALL subjects
+
+| Step | Status | Notes |
+|------|--------|-------|
+| Prompt | ⬜ | Generate comparison attributes |
+| Template | ⬜ | Two-column comparison table |
+| Registry | ⬜ | |
+| Renderer | ⬜ | |
+| UI | ⬜ | |
+| Testing | ⬜ | |
+
+---
+
+### TEMPLATE 10: Timeline ⬜ FUTURE
+**File:** `src/templates/timeline.tsx`
+**Complexity:** Medium
+**Works for:** History, Science, ELA
+
+| Step | Status | Notes |
+|------|--------|-------|
+| Prompt | ⬜ | Generate dated events |
+| Template | ⬜ | Horizontal/vertical timeline |
+| Registry | ⬜ | |
+| Renderer | ⬜ | |
+| UI | ⬜ | |
+| Testing | ⬜ | |
+
+---
+
+## �📝 PROMPT ENGINEERING NOTES
 
 ### Key Principles for AI Content Generation
 

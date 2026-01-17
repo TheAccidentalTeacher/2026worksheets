@@ -154,6 +154,23 @@ Respond with JSON in this exact format:
   ]
 }`;
 
+    case 'matching':
+      return `${baseContext}
+Create a matching worksheet with 8 terms and their definitions.
+Each term should match to exactly one definition.
+
+Respond with JSON in this exact format:
+{
+  "title": "[Topic] Matching",
+  "instructions": "Match each term in Column A with its definition in Column B. Write the letter of the correct answer on the line.",
+  "items": [
+    {
+      "term": "vocabulary word",
+      "definition": "the definition of the word"
+    }
+  ]
+}`;
+
     default:
       return `${baseContext}
 Create educational content for a ${worksheetType} worksheet about this topic.

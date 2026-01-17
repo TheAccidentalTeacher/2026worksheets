@@ -1,6 +1,9 @@
 import React from 'react';
 import { renderToBuffer, DocumentProps } from '@react-pdf/renderer';
 import { VocabularyCards } from '@/templates/vocabulary-cards';
+import { MultipleChoice } from '@/templates/multiple-choice';
+import { FillInBlank } from '@/templates/fill-in-blank';
+import { Matching } from '@/templates/matching';
 import { GeneratedContent } from '@/lib/api/openai';
 import { ResolvedAsset } from '@/lib/assets/resolver';
 import { WorksheetType } from '@/types/worksheet';
@@ -15,6 +18,7 @@ export interface RenderOptions {
   options?: {
     showImages?: boolean;
     cardStyle?: 'standard' | 'flashcard';
+    showAnswerKey?: boolean;
   };
 }
 
@@ -39,6 +43,27 @@ export async function renderWorksheetToPdf(
       }) as React.ReactElement<DocumentProps>;
       break;
 
+    case 'multiple-choice':
+      element = React.createElement(MultipleChoice, {
+        content,
+        showAnswerKey: options?.showAnswerKey ?? true,
+      }) as React.ReactElement<DocumentProps>;
+      break;
+
+    case 'fill-in-blank':
+      element = React.createElement(FillInBlank, {
+        content,
+        showAnswerKey: options?.showAnswerKey ?? true,
+      }) as React.ReactElement<DocumentProps>;
+      break;
+
+    case 'matching':
+      element = React.createElement(Matching, {
+        content,
+        showAnswerKey: options?.showAnswerKey ?? true,
+      }) as React.ReactElement<DocumentProps>;
+      break;
+
     default:
       throw new Error(`Template not implemented: ${worksheetType}`);
   }
@@ -52,8 +77,7 @@ export async function renderWorksheetToPdf(
  * Get supported template types
  */
 export function getSupportedTemplates(): WorksheetType[] {
-  return ['vocabulary-cards'];
-  // Add more as implemented
+  return ['vocabulary-cards', 'multiple-choice', 'fill-in-blank', 'matching'];
 }
 
 /**

@@ -160,10 +160,11 @@ export default function Home() {
                   onChange={(e) => setWorksheetType(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
-                  <option value="vocabulary-cards">Vocabulary Cards</option>
-                  <option value="labeled-diagram" disabled>Labeled Diagram (coming soon)</option>
-                  <option value="multiple-choice" disabled>Multiple Choice (coming soon)</option>
-                  <option value="fill-in-blank" disabled>Fill in the Blank (coming soon)</option>
+                  <option value="vocabulary-cards">📝 Vocabulary Cards</option>
+                  <option value="multiple-choice">✅ Multiple Choice Quiz</option>
+                  <option value="fill-in-blank">✏️ Fill in the Blank</option>
+                  <option value="matching">🔗 Matching</option>
+                  <option value="labeled-diagram" disabled>🏷️ Labeled Diagram (coming soon)</option>
                 </select>
               </div>
             </div>

@@ -27,12 +27,21 @@ export const fontSizes = {
 
 // Common colors
 export const colors = {
+  // Base colors
   black: '#1a1a1a',
   darkGray: '#4a4a4a',
   mediumGray: '#888888',
   lightGray: '#cccccc',
   veryLightGray: '#f5f5f5',
   white: '#ffffff',
+  
+  // Semantic colors (used by templates)
+  text: '#1a1a1a',
+  muted: '#6b7280',
+  border: '#e5e7eb',
+  lightBg: '#f9fafb',
+  
+  // Brand colors
   primary: '#2563eb', // Blue
   secondary: '#7c3aed', // Purple
   success: '#16a34a', // Green
