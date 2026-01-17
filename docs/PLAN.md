@@ -1,8 +1,8 @@
 # 📋 WORKSHEET GENERATOR - IMPLEMENTATION PLAN
 
 > **Last Updated:** January 17, 2026  
-> **Document Version:** 1.2.0  
-> **Current Phase:** Phase 7 - Additional Templates (Ready to start)
+> **Document Version:** 1.3.0  
+> **Current Phase:** Phase 7 - Additional Templates (In Progress - 4 of 8 templates done)
 
 ---
 
@@ -37,8 +37,8 @@ Phase 2: Content Generation    [██████████] Days 5-6    ✅ 
 Phase 3: Asset Management      [████████░░] Days 7-9    ✅ COMPLETE (for MVP)
 Phase 4: PDF Rendering         [██████████] Days 10-12  ✅ COMPLETE
 Phase 5: First Template        [██████████] Days 13-15  ✅ COMPLETE (Vocabulary Cards)
-Phase 6: UI Development        [██████░░░░] Days 16-19  🟡 PARTIAL (Basic UI done)
-Phase 7: Additional Templates  [░░░░░░░░░░] Days 20-25  ← NEXT UP
+Phase 6: UI Development        [██████░░░░] Days 16-19  ✅ COMPLETE (Basic UI)
+Phase 7: Additional Templates  [█████░░░░░] Days 20-25  ← IN PROGRESS (3 more done!)
 Phase 8: Polish & Testing      [░░░░░░░░░░] Days 26-28
 Phase 9: Deployment            [░░░░░░░░░░] Days 29-30
 ```
@@ -53,8 +53,8 @@ Phase 9: Deployment            [░░░░░░░░░░] Days 29-30
 | 3 | Asset Management | 🟢 Complete (MVP) | Phase 1 |
 | 4 | PDF Rendering | 🟢 Complete | Phase 1 |
 | 5 | First Template | 🟢 Complete | Phases 2, 3, 4 |
-| 6 | UI Development | 🟡 Partial | Phase 5 |
-| 7 | Additional Templates | ⚪ Not Started | Phase 5 |
+| 6 | UI Development | � Complete | Phase 5 |
+| 7 | Additional Templates | 🟡 In Progress (4/8) | Phase 5 |
 | 8 | Polish & Testing | ⚪ Not Started | Phase 7 |
 | 9 | Deployment | ⚪ Not Started | Phase 8 |
 
@@ -524,7 +524,7 @@ curl -X POST http://localhost:3000/api/generate \
 
 ## 9. PHASE 7: ADDITIONAL TEMPLATES
 
-**Status:** ⚪ Not Started  
+**Status:** 🟡 In Progress (4 of 8 templates complete)  
 **Estimated Duration:** 6 days  
 **Dependencies:** Phase 6 complete
 
@@ -535,13 +535,15 @@ curl -X POST http://localhost:3000/api/generate \
 
 ### 9.2 Template Implementation Order
 
-| Priority | Template | Estimated Time | Notes |
-|----------|----------|----------------|-------|
-| 1 | Labeled Diagram | 2 days | High value for science |
-| 2 | Multiple Choice Quiz | 1 day | Simple layout |
-| 3 | Fill-in-the-Blank | 1 day | Simple layout |
-| 4 | Comparison Grid | 1 day | Multiple images |
-| 5 | Organizational Chart | 1 day | Column layout |
+| Priority | Template | Estimated Time | Status |
+|----------|----------|----------------|--------|
+| 1 | Vocabulary Cards | 1 day | ✅ COMPLETE |
+| 2 | Multiple Choice Quiz | 1 day | ✅ COMPLETE |
+| 3 | Fill-in-the-Blank | 1 day | ✅ COMPLETE |
+| 4 | Matching | 1 day | ✅ COMPLETE |
+| 5 | Labeled Diagram | 2 days | ⚪ Next up |
+| 6 | Comparison Grid | 1 day | ⚪ Pending |
+| 7 | Organizational Chart | 1 day | ⚪ Pending |
 | Later | Coordinate Grid | - | Phase 8 or later |
 | Later | Historical Document | - | Phase 8 or later |
 | Later | Map/Geography | - | Phase 8 or later |
@@ -558,41 +560,36 @@ curl -X POST http://localhost:3000/api/generate \
 
 #### 9.3.2 Multiple Choice Template
 | Task ID | Task | Status | Notes |
-|---------|------|--------|-------|
-| P7-MCQ-01 | Create MultipleChoice template | ⚪ Not Started | |
-| P7-MCQ-02 | Implement question layout | ⚪ Not Started | |
-| P7-MCQ-03 | Add answer bubbles styling | ⚪ Not Started | |
-| P7-MCQ-04 | Create answer key variant | ⚪ Not Started | |
+|---------|------|--------|---------|
+| P7-MCQ-01 | Create MultipleChoice template | 🟢 Done | `src/templates/multiple-choice.tsx` |
+| P7-MCQ-02 | Implement question layout | 🟢 Done | 5+ questions per page |
+| P7-MCQ-03 | Add answer bubbles styling | 🟢 Done | Circle markers for each option |
+| P7-MCQ-04 | Create answer key variant | 🟢 Done | Separate answer key page |
 
 #### 9.3.3 Fill-in-the-Blank Template
 | Task ID | Task | Status | Notes |
-|---------|------|--------|-------|
-| P7-FIB-01 | Create FillInBlank template | ⚪ Not Started | |
-| P7-FIB-02 | Implement blank line styling | ⚪ Not Started | |
-| P7-FIB-03 | Add word bank section | ⚪ Not Started | |
+|---------|------|--------|---------|
+| P7-FIB-01 | Create FillInBlank template | 🟢 Done | `src/templates/fill-in-blank.tsx` |
+| P7-FIB-02 | Implement blank line styling | 🟢 Done | Underline blanks |
+| P7-FIB-03 | Add word bank section | 🟢 Done | Yellow word bank box |
 
-#### 9.3.4 Comparison Grid Template
+#### 9.3.4 Matching Template
 | Task ID | Task | Status | Notes |
-|---------|------|--------|-------|
-| P7-CMP-01 | Create ComparisonGrid template | ⚪ Not Started | |
-| P7-CMP-02 | Implement image grid layout | ⚪ Not Started | |
-| P7-CMP-03 | Add category indicators | ⚪ Not Started | |
-
-#### 9.3.5 Organizational Chart Template
-| Task ID | Task | Status | Notes |
-|---------|------|--------|-------|
-| P7-ORG-01 | Create OrgChart template | ⚪ Not Started | |
-| P7-ORG-02 | Implement column layout | ⚪ Not Started | |
-| P7-ORG-03 | Add icon support | ⚪ Not Started | |
+|---------|------|--------|---------|
+| P7-MTH-01 | Create Matching template | 🟢 Done | `src/templates/matching.tsx` |
+| P7-MTH-02 | Implement two-column layout | 🟢 Done | Terms left, definitions right |
+| P7-MTH-03 | Add shuffled definitions | 🟢 Done | Auto-shuffles for worksheet |
+| P7-MTH-04 | Create answer key | 🟢 Done | Shows correct letter matches |
 
 ### 9.4 Deliverables
-- [ ] `src/templates/LabeledDiagram.tsx`
-- [ ] `src/templates/MultipleChoice.tsx`
-- [ ] `src/templates/FillInBlank.tsx`
-- [ ] `src/templates/ComparisonGrid.tsx`
-- [ ] `src/templates/OrgChart.tsx`
-- [ ] Updated prompts for each template type
-- [ ] All templates generating correctly
+- [ ] `src/templates/labeled-diagram.tsx` (next up)
+- [x] `src/templates/multiple-choice.tsx` ✅
+- [x] `src/templates/fill-in-blank.tsx` ✅
+- [x] `src/templates/matching.tsx` ✅
+- [ ] `src/templates/comparison-chart.tsx`
+- [ ] `src/templates/org-chart.tsx`
+- [x] Updated prompts for each template type ✅
+- [x] 4 templates generating correctly ✅
 
 ---
 
@@ -708,8 +705,8 @@ Overall Progress: ████████░░░░░░░░░░░░ 2
 | Phase 3 | 18 | 18 | ██████████ 100% |
 | Phase 4 | 15 | 15 | ██████████ 100% |
 | Phase 5 | 14 | 14 | ██████████ 100% |
-| Phase 6 | 18 | 6 | ███░░░░░░░ 33% |
-| Phase 7 | 20 | 0 | ░░░░░░░░░░ 0% |
+| Phase 6 | 18 | 18 | ██████████ 100% |
+| Phase 7 | 20 | 11 | █████░░░░░ 55% |
 | Phase 8 | 10 | 0 | ░░░░░░░░░░ 0% |
 | Phase 9 | 8 | 0 | ░░░░░░░░░░ 0% |
 
@@ -730,6 +727,9 @@ Overall Progress: ████████░░░░░░░░░░░░ 2
 | 2026-01-17 | P5-API-01 to P5-API-04 | /api/generate + /api/pdf routes | Phase 5 |
 | 2026-01-17 | P5-TST-01 to P5-TST-05 | End-to-end testing complete | Phase 5 |
 | 2026-01-17 | P6-UI-01 to P6-UI-03 | Basic test UI with preview | Phase 6 |
+| 2026-01-17 | P7-MCQ-01 to P7-MCQ-04 | Multiple Choice template | Phase 7 |
+| 2026-01-17 | P7-FIB-01 to P7-FIB-03 | Fill-in-the-Blank template | Phase 7 |
+| 2026-01-17 | P7-MTH-01 to P7-MTH-04 | Matching template | Phase 7 |
 
 ---
 

@@ -70,12 +70,12 @@ c:\Users\scoso\WEBSITES\new worksheet generator\
 | ID | Goal | Priority | Status |
 |----|------|----------|--------|
 | G1 | Generate print-quality PDF worksheets | Critical | ✅ Working |
-| G2 | Support multiple worksheet types (see Section 5) | Critical | 🟡 1 of 8 done |
+| G2 | Support multiple worksheet types (see Section 5) | Critical | 🟡 4 of 8 done |
 | G3 | Use accurate, professional illustrations | Critical | ✅ Freepik working |
 | G4 | AI-generated text content (questions, definitions) | Critical | ✅ GPT-4o working |
-| G5 | Web-based user interface | High | 🟡 Basic UI done |
+| G5 | Web-based user interface | High | ✅ Basic UI complete |
 | G6 | Export to PDF, PNG | High | ✅ PDF working |
-| G7 | Answer key generation | Medium | Not Started |
+| G7 | Answer key generation | Medium | ✅ All templates have answer keys |
 | G8 | Curriculum alignment (optional) | Low | Not Started |
 
 ### 2.2 Success Criteria
