@@ -22,9 +22,8 @@ export const baseStyles = StyleSheet.create({
   },
   
   title: {
-    fontFamily: fonts.heading,
+    fontFamily: 'Helvetica-Bold',
     fontSize: fontSizes.title,
-    fontWeight: 700,
     color: colors.black,
     marginBottom: spacing.sm,
   },
@@ -52,7 +51,7 @@ export const baseStyles = StyleSheet.create({
   
   nameDateLabel: {
     fontSize: fontSizes.body,
-    fontWeight: 600,
+    fontFamily: 'Helvetica-Bold',
   },
   
   nameDateLine: {
@@ -115,7 +114,7 @@ export const baseStyles = StyleSheet.create({
   
   wordBankTitle: {
     fontSize: fontSizes.small,
-    fontWeight: 600,
+    fontFamily: 'Helvetica-Bold',
     marginBottom: spacing.sm,
     color: colors.darkGray,
   },

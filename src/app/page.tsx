@@ -9,11 +9,13 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
 
   const handleGenerateContent = async () => {
     setLoading(true);
     setError(null);
     setResult(null);
+    setPdfUrl(null);
 
     try {
       const response = await fetch('/api/generate', {
@@ -41,9 +43,16 @@ export default function Home() {
     }
   };
 
-  const handleGeneratePDF = async () => {
+  const handleGeneratePDF = async (download: boolean = false) => {
     setLoading(true);
     setError(null);
+    setResult(null);
+    
+    // Revoke previous URL to prevent memory leaks
+    if (pdfUrl) {
+      window.URL.revokeObjectURL(pdfUrl);
+      setPdfUrl(null);
+    }
 
     try {
       const response = await fetch('/api/pdf', {
@@ -57,17 +66,23 @@ export default function Home() {
       });
 
       if (response.ok) {
-        // Download the PDF
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${topic.replace(/[^a-z0-9]/gi, '-').toLowerCase()}-worksheet.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-        setResult('PDF downloaded successfully!');
+        
+        if (download) {
+          // Download the PDF
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `${topic.replace(/[^a-z0-9]/gi, '-').toLowerCase()}-worksheet.pdf`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(url);
+          setResult('PDF downloaded successfully!');
+        } else {
+          // Preview the PDF
+          setPdfUrl(url);
+        }
       } else {
         const data = await response.json();
         setError(data.error || 'PDF generation failed');
@@ -79,9 +94,20 @@ export default function Home() {
     }
   };
 
+  const handleDownloadPreview = () => {
+    if (pdfUrl) {
+      const a = document.createElement('a');
+      a.href = pdfUrl;
+      a.download = `${topic.replace(/[^a-z0-9]/gi, '-').toLowerCase()}-worksheet.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4">
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">
           🎓 Worksheet Generator
         </h1>
@@ -146,16 +172,23 @@ export default function Home() {
               <button
                 onClick={handleGenerateContent}
                 disabled={loading}
-                className="flex-1 bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? 'Generating...' : 'Preview Content (JSON)'}
+                {loading ? 'Generating...' : 'Preview JSON'}
               </button>
               <button
-                onClick={handleGeneratePDF}
+                onClick={() => handleGeneratePDF(false)}
                 disabled={loading}
                 className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? 'Generating...' : '📄 Generate PDF'}
+                {loading ? 'Generating...' : '👁️ Preview PDF'}
+              </button>
+              <button
+                onClick={() => handleGeneratePDF(true)}
+                disabled={loading}
+                className="bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? 'Generating...' : '📥 Download PDF'}
               </button>
             </div>
           </div>
@@ -167,10 +200,29 @@ export default function Home() {
           </div>
         )}
 
+        {pdfUrl && (
+          <div className="bg-white rounded-lg shadow p-6 mb-6">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">PDF Preview</h3>
+              <button
+                onClick={handleDownloadPreview}
+                className="bg-green-600 text-white py-1 px-4 rounded-md hover:bg-green-700 text-sm"
+              >
+                📥 Download This PDF
+              </button>
+            </div>
+            <iframe
+              src={pdfUrl}
+              className="w-full h-[800px] border border-gray-200 rounded"
+              title="PDF Preview"
+            />
+          </div>
+        )}
+
         {result && (
           <div className="bg-white rounded-lg shadow p-6">
             <h3 className="text-lg font-semibold mb-2">Result</h3>
-            <pre className="bg-gray-100 p-4 rounded overflow-x-auto text-sm">
+            <pre className="bg-gray-100 p-4 rounded overflow-x-auto text-sm max-h-96">
               {result}
             </pre>
           </div>

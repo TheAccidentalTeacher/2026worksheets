@@ -1,69 +1,18 @@
-import { Font } from '@react-pdf/renderer';
+// PDF fonts configuration
+// Using built-in fonts for reliability - custom fonts can be added later
 
-// Register fonts for PDF generation
-// Using Google Fonts that are available via CDN
-
-// Primary font - clean and readable
-Font.register({
-  family: 'Inter',
-  fonts: [
-    {
-      src: 'https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hjp-Ek-_EeA.woff2',
-      fontWeight: 400,
-    },
-    {
-      src: 'https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuI6fAZ9hjp-Ek-_EeA.woff2',
-      fontWeight: 600,
-    },
-    {
-      src: 'https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuFuYAZ9hjp-Ek-_EeA.woff2',
-      fontWeight: 700,
-    },
-  ],
-});
-
-// Heading font - friendly for kids
-Font.register({
-  family: 'Poppins',
-  fonts: [
-    {
-      src: 'https://fonts.gstatic.com/s/poppins/v20/pxiEyp8kv8JHgFVrJJfecg.woff2',
-      fontWeight: 400,
-    },
-    {
-      src: 'https://fonts.gstatic.com/s/poppins/v20/pxiByp8kv8JHgFVrLEj6Z1xlFQ.woff2',
-      fontWeight: 600,
-    },
-    {
-      src: 'https://fonts.gstatic.com/s/poppins/v20/pxiByp8kv8JHgFVrLCz7Z1xlFQ.woff2',
-      fontWeight: 700,
-    },
-  ],
-});
-
-// Handwriting font - for answers/cursive
-Font.register({
-  family: 'Caveat',
-  fonts: [
-    {
-      src: 'https://fonts.gstatic.com/s/caveat/v17/WnznHAc5bAfYB2QRah7pcpNvOx-pjfJ9eIWpYQ.woff2',
-      fontWeight: 400,
-    },
-    {
-      src: 'https://fonts.gstatic.com/s/caveat/v17/WnznHAc5bAfYB2QRah7pcpNvOx-pjcx6eIWpYQ.woff2',
-      fontWeight: 700,
-    },
-  ],
-});
-
-// Hyphenation callback - prevent awkward word breaks
-Font.registerHyphenationCallback((word) => [word]);
+// React-PDF built-in fonts:
+// - Courier, Courier-Bold, Courier-Oblique, Courier-BoldOblique
+// - Helvetica, Helvetica-Bold, Helvetica-Oblique, Helvetica-BoldOblique
+// - Times-Roman, Times-Bold, Times-Italic, Times-BoldItalic
+// - Symbol, ZapfDingbats
 
 // Export font family names for consistency
+// Using built-in fonts that don't require registration
 export const fonts = {
-  primary: 'Inter',
-  heading: 'Poppins',
-  handwriting: 'Caveat',
+  primary: 'Helvetica',
+  heading: 'Helvetica-Bold',
+  handwriting: 'Times-Italic', // Closest to handwriting in built-in fonts
 } as const;
 
 // Common font sizes

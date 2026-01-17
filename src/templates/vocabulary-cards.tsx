@@ -54,15 +54,14 @@ const styles = StyleSheet.create({
   },
   
   cardTerm: {
-    fontFamily: fonts.heading,
+    fontFamily: 'Helvetica-Bold',
     fontSize: fontSizes.heading,
-    fontWeight: 700,
     color: colors.primary,
     marginBottom: spacing.xs,
   },
   
   cardDefinition: {
-    fontFamily: fonts.primary,
+    fontFamily: 'Helvetica',
     fontSize: fontSizes.small,
     color: colors.darkGray,
     lineHeight: 1.4,
@@ -88,9 +87,8 @@ const styles = StyleSheet.create({
   },
   
   flashCardTerm: {
-    fontFamily: fonts.heading,
+    fontFamily: 'Helvetica-Bold',
     fontSize: fontSizes.heading,
-    fontWeight: 700,
     color: colors.white,
     textAlign: 'center',
   },
@@ -103,7 +101,7 @@ const styles = StyleSheet.create({
   },
   
   flashCardDefinition: {
-    fontFamily: fonts.primary,
+    fontFamily: 'Helvetica',
     fontSize: fontSizes.tiny,
     color: colors.darkGray,
     textAlign: 'center',
