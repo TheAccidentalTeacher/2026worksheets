@@ -1,0 +1,72 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ============================================
+// WORKSHEET MODEL
+// ============================================
+model Worksheet {
+  id            String   @id @default(cuid())
+  title         String
+  topic         String
+  gradeLevel    String
+  worksheetType String
+  instructions  String?
+  content       String   // JSON string of content items
+  answerKey     String?  // JSON string of answer key
+  pdfPath       String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  assets WorksheetAsset[]
+
+  @@index([topic])
+  @@index([worksheetType])
+  @@index([createdAt])
+}
+
+// ============================================
+// ASSET MODEL - Cached/downloaded assets
+// ============================================
+model Asset {
+  id          String   @id @default(cuid())
+  source      String   // 'freepik', 'vecteezy', 'local', 'ai'
+  sourceId    String?  // Original ID from source
+  title       String
+  keywords    String   // JSON array of keywords
+  previewUrl  String
+  downloadUrl String?
+  localPath   String?  // Path if downloaded locally
+  fileType    String   // 'svg', 'png', 'jpg', 'eps'
+  attribution String?
+  createdAt   DateTime @default(now())
+  lastUsedAt  DateTime @default(now())
+
+  // Relations
+  worksheets WorksheetAsset[]
+
+  @@unique([source, sourceId])
+  @@index([keywords])
+}
+
+// ============================================
+// JUNCTION TABLE - Worksheet <-> Asset
+// ============================================
+model WorksheetAsset {
+  id          String    @id @default(cuid())
+  worksheetId String
+  assetId     String
+  position    Int       @default(0) // Order in worksheet
+  worksheet   Worksheet @relation(fields: [worksheetId], references: [id], onDelete: Cascade)
+  asset       Asset     @relation(fields: [assetId], references: [id])
+
+  @@unique([worksheetId, assetId])
+}
