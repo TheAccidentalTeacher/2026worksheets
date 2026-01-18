@@ -1,8 +1,9 @@
 # 📋 WORKSHEET GENERATOR - IMPLEMENTATION PLAN
 
 > **Last Updated:** January 17, 2026  
-> **Document Version:** 1.4.0  
-> **Current Phase:** Phase 7 - Additional Templates (In Progress - 4 of 8 templates done + Branding System)
+> **Document Version:** 1.5.0  
+> **Current Phase:** Phase 7 - Additional Templates (6 of 8 templates done + Branding + Grade-Appropriate Images)
+> **Deployment:** ✅ LIVE
 
 ---
 
@@ -34,13 +35,13 @@
 Phase 0: Planning & Setup      [██████████] Days 1-2    ✅ COMPLETE
 Phase 1: Foundation            [██████████] Days 3-4    ✅ COMPLETE
 Phase 2: Content Generation    [██████████] Days 5-6    ✅ COMPLETE
-Phase 3: Asset Management      [████████░░] Days 7-9    ✅ COMPLETE (for MVP)
+Phase 3: Asset Management      [██████████] Days 7-9    ✅ COMPLETE (for MVP)
 Phase 4: PDF Rendering         [██████████] Days 10-12  ✅ COMPLETE
 Phase 5: First Template        [██████████] Days 13-15  ✅ COMPLETE (Vocabulary Cards)
-Phase 6: UI Development        [██████░░░░] Days 16-19  ✅ COMPLETE (Basic UI)
-Phase 7: Additional Templates  [█████░░░░░] Days 20-25  ← IN PROGRESS (3 more done!)
+Phase 6: UI Development        [██████████] Days 16-19  ✅ COMPLETE (Basic UI)
+Phase 7: Additional Templates  [███████░░░] Days 20-25  ← IN PROGRESS (6 of 8 done!)
 Phase 8: Polish & Testing      [░░░░░░░░░░] Days 26-28
-Phase 9: Deployment            [░░░░░░░░░░] Days 29-30
+Phase 9: Deployment            [██████████] Days 29-30  ✅ LIVE
 ```
 
 ### 1.2 Phase Summary
@@ -541,9 +542,9 @@ curl -X POST http://localhost:3000/api/generate \
 | 2 | Multiple Choice Quiz | 1 day | ✅ COMPLETE |
 | 3 | Fill-in-the-Blank | 1 day | ✅ COMPLETE |
 | 4 | Matching | 1 day | ✅ COMPLETE |
-| 5 | Labeled Diagram | 2 days | ⚪ Next up |
-| 6 | Comparison Grid | 1 day | ⚪ Pending |
-| 7 | Organizational Chart | 1 day | ⚪ Pending |
+| 5 | Labeled Diagram | 2 days | ✅ COMPLETE |
+| 6 | Comparison Chart | 1 day | ✅ COMPLETE |
+| 7 | Organizational Chart | 1 day | ⚪ Next up |
 | Later | Coordinate Grid | - | Phase 8 or later |
 | Later | Historical Document | - | Phase 8 or later |
 | Later | Map/Geography | - | Phase 8 or later |
@@ -553,10 +554,18 @@ curl -X POST http://localhost:3000/api/generate \
 #### 9.3.1 Labeled Diagram Template
 | Task ID | Task | Status | Notes |
 |---------|------|--------|-------|
-| P7-DGM-01 | Create LabeledDiagram template | ⚪ Not Started | |
-| P7-DGM-02 | Implement label positioning | ⚪ Not Started | |
-| P7-DGM-03 | Add word bank section | ⚪ Not Started | |
-| P7-DGM-04 | Create diagram-specific prompts | ⚪ Not Started | |
+| P7-DGM-01 | Create LabeledDiagram template | 🟢 Done | `src/templates/labeled-diagram.tsx` |
+| P7-DGM-02 | Implement label positioning | 🟢 Done | Numbered labels with hints |
+| P7-DGM-03 | Add word bank section | 🟢 Done | Green word bank, shuffled |
+| P7-DGM-04 | Create diagram-specific prompts | 🟢 Done | `diagramKeywords` in prompt |
+
+#### 9.3.1b Comparison Chart Template
+| Task ID | Task | Status | Notes |
+|---------|------|--------|-------|
+| P7-CMP-01 | Create ComparisonGrid template | 🟢 Done | `src/templates/comparison-grid.tsx` |
+| P7-CMP-02 | Implement table layout | 🟢 Done | Category rows, subject columns |
+| P7-CMP-03 | Add blank/answer modes | 🟢 Done | Shows blanks for student completion |
+| P7-CMP-04 | Create comparison prompts | 🟢 Done | `subjects` and `data` arrays |
 
 #### 9.3.2 Multiple Choice Template
 | Task ID | Task | Status | Notes |
@@ -704,11 +713,11 @@ These are planned for after v1 launch:
 
 ```
 Total Tasks: ~150
-Completed: 31
+Completed: 45
 In Progress: 0
-Remaining: ~119
+Remaining: ~105
 
-Overall Progress: ████████░░░░░░░░░░░░ 21%
+Overall Progress: █████████████░░░░░░░ 30%
 ```
 
 ### 13.2 Phase Progress
@@ -722,14 +731,17 @@ Overall Progress: ████████░░░░░░░░░░░░ 2
 | Phase 4 | 15 | 15 | ██████████ 100% |
 | Phase 5 | 14 | 14 | ██████████ 100% |
 | Phase 6 | 18 | 18 | ██████████ 100% |
-| Phase 7 | 27 | 18 | ██████░░░░ 67% |
+| Phase 7 | 35 | 27 | ████████░░ 77% |
 | Phase 8 | 10 | 0 | ░░░░░░░░░░ 0% |
-| Phase 9 | 8 | 0 | ░░░░░░░░░░ 0% |
+| Phase 9 | 8 | 8 | ██████████ 100% (LIVE!) |
 
 ### 13.3 Recent Completions
 
 | Date | Task ID | Task | Phase |
 |------|---------|------|-------|
+| 2026-01-17 | P7-IMG-01 to P7-IMG-03 | Grade-appropriate image selection | Phase 7 |
+| 2026-01-17 | P7-DGM-01 to P7-DGM-04 | Labeled Diagram template | Phase 7 |
+| 2026-01-17 | P7-CMP-01 to P7-CMP-04 | Comparison Chart template | Phase 7 |
 | 2026-01-17 | P7-BRD-01 to P7-BRD-07 | Branding/customization system | Phase 7 |
 | 2026-01-17 | P0-DOC-01 to P0-DOC-04 | All documentation created | Phase 0 |
 | 2026-01-17 | P0-API-01 to P0-API-09 | Configure all API keys | Phase 0 |
