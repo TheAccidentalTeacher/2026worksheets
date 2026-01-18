@@ -44,13 +44,14 @@ export async function generateWorksheet(
   const allKeywords = extractImageKeywords(content, worksheetType, topic);
   console.log(`[Generator] Image keywords:`, allKeywords);
 
-  // Step 3: Resolve assets for each keyword set
+  // Step 3: Resolve assets for each keyword set (with grade-level awareness)
   const assets: ResolvedAsset[] = [];
   
   for (const keywords of allKeywords) {
     try {
       const resolved = await resolveAssets(keywords, {
         maxResults: 1,
+        gradeLevel: gradeLevel, // Pass grade level for age-appropriate images
       });
       if (resolved.length > 0) {
         assets.push(resolved[0]);
@@ -60,7 +61,7 @@ export async function generateWorksheet(
     }
   }
 
-  console.log(`[Generator] Resolved ${assets.length} assets`);
+  console.log(`[Generator] Resolved ${assets.length} assets (grade: ${gradeLevel})`);
 
   // Step 4: Create the worksheet object
   const worksheet: GeneratedWorksheet = {

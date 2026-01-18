@@ -44,10 +44,19 @@ export async function generateWorksheetContent(
   const systemPrompt = `You are an expert educational content creator specializing in K-12 worksheets.
 You create age-appropriate, accurate, and engaging content for students.
 Always respond with valid JSON matching the requested structure.
-Grade level guide:
+
+Grade level guide for CONTENT:
 - K-2: Simple vocabulary, short sentences, basic concepts
 - 3-5: More detail, compound sentences, intermediate concepts
-- 6-8: Complex ideas, academic vocabulary, deeper analysis`;
+- 6-8: Complex ideas, academic vocabulary, deeper analysis
+
+CRITICAL - Grade level guide for IMAGE KEYWORDS:
+- K-2: Use keywords like "cute", "cartoon", "simple", "colorful", "kids", "child-friendly"
+- 3-5: Use keywords like "educational", "illustration", "diagram", "labeled", "clear"
+- 6-8: Use keywords like "realistic", "detailed", "scientific", "professional", "diagram", "infographic", "academic"
+
+For middle school (6-8), NEVER suggest cartoon or cute imagery. Use realistic, detailed, and academic-style visuals.
+For elementary (K-2), prioritize friendly, colorful, and simple imagery.`;
 
   const userPrompt = buildPromptForType(worksheetType, topic, gradeLevel, additionalInstructions);
 
@@ -79,13 +88,29 @@ function buildPromptForType(
   gradeLevel: string,
   additionalInstructions?: string
 ): string {
-  const baseContext = `Topic: ${topic}\nGrade Level: ${gradeLevel}\n${additionalInstructions ? `Additional Instructions: ${additionalInstructions}\n` : ''}`;
+  // Determine image style based on grade level
+  const gradeNum = gradeLevel === 'K' ? 0 : parseInt(gradeLevel);
+  let imageStyleGuide: string;
+  
+  if (gradeNum <= 2) {
+    imageStyleGuide = 'Use image keywords that find COLORFUL, CARTOON, CHILD-FRIENDLY, CUTE illustrations suitable for young children.';
+  } else if (gradeNum <= 5) {
+    imageStyleGuide = 'Use image keywords that find EDUCATIONAL, CLEAR, ILLUSTRATED diagrams suitable for upper elementary students.';
+  } else {
+    imageStyleGuide = 'Use image keywords that find REALISTIC, DETAILED, SCIENTIFIC, PROFESSIONAL, ACADEMIC-STYLE images suitable for middle school students. NEVER use "cute", "cartoon", or "kids" in keywords.';
+  }
+
+  const baseContext = `Topic: ${topic}
+Grade Level: ${gradeLevel}
+${additionalInstructions ? `Additional Instructions: ${additionalInstructions}\n` : ''}
+IMAGE KEYWORD REQUIREMENTS: ${imageStyleGuide}`;
 
   switch (worksheetType) {
     case 'vocabulary-cards':
       return `${baseContext}
 Create vocabulary cards for this topic. Generate 6 terms with their definitions.
-For each term, suggest 2-3 keywords that would find a good educational illustration.
+For each term, suggest 2-3 keywords that would find a grade-appropriate educational illustration.
+Remember: ${imageStyleGuide}
 
 Respond with JSON in this exact format:
 {
@@ -103,6 +128,7 @@ Respond with JSON in this exact format:
       return `${baseContext}
 Create a labeled diagram worksheet. Generate 6-8 parts that should be labeled.
 Include a word bank and suggest the main diagram image to search for.
+Remember: ${imageStyleGuide}
 
 Respond with JSON in this exact format:
 {

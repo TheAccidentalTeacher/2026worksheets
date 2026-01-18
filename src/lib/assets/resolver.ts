@@ -13,6 +13,27 @@ export interface ResolvedAsset {
 export interface AssetSearchOptions {
   maxResults?: number;
   preferredSource?: 'freepik' | 'vecteezy' | 'any';
+  gradeLevel?: string; // K, 1-8
+}
+
+/**
+ * Get grade-appropriate search modifiers
+ */
+function getGradeModifiers(gradeLevel?: string): string {
+  if (!gradeLevel) return '';
+  
+  const grade = gradeLevel === 'K' ? 0 : parseInt(gradeLevel);
+  
+  if (grade <= 2) {
+    // Early elementary: colorful, simple, cartoon-style
+    return 'cartoon colorful kids';
+  } else if (grade <= 5) {
+    // Upper elementary: educational illustrations
+    return 'educational illustration';
+  } else {
+    // Middle school: realistic, detailed, professional
+    return 'realistic detailed professional';
+  }
 }
 
 /**
@@ -23,8 +44,15 @@ export async function resolveAssets(
   keywords: string[],
   options: AssetSearchOptions = {}
 ): Promise<ResolvedAsset[]> {
-  const { maxResults = 5, preferredSource = 'any' } = options;
-  const searchTerm = keywords.join(' ');
+  const { maxResults = 5, preferredSource = 'any', gradeLevel } = options;
+  
+  // Add grade-appropriate modifiers to search
+  const gradeModifiers = getGradeModifiers(gradeLevel);
+  const baseSearchTerm = keywords.join(' ');
+  const searchTerm = gradeModifiers ? `${baseSearchTerm} ${gradeModifiers}` : baseSearchTerm;
+  
+  console.log(`[AssetResolver] Searching: "${searchTerm}" (grade: ${gradeLevel || 'unspecified'})`);
+  
   const results: ResolvedAsset[] = [];
 
   // Try Freepik first (primary source)
