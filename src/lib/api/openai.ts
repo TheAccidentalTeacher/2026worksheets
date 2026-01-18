@@ -171,6 +171,24 @@ Respond with JSON in this exact format:
   ]
 }`;
 
+    case 'comparison-grid':
+      return `${baseContext}
+Create a comparison chart worksheet. Compare 2-3 items across 5-6 categories.
+The chart should help students understand similarities and differences.
+
+Respond with JSON in this exact format:
+{
+  "title": "[Topic] Comparison",
+  "instructions": "Compare the items by filling in the chart below.",
+  "subjects": ["Item 1", "Item 2"],
+  "data": [
+    {
+      "category": "Category Name",
+      "values": ["Item 1 answer", "Item 2 answer"]
+    }
+  ]
+}`;
+
     default:
       return `${baseContext}
 Create educational content for a ${worksheetType} worksheet about this topic.

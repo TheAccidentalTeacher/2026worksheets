@@ -4,6 +4,8 @@ import { VocabularyCards } from '@/templates/vocabulary-cards';
 import { MultipleChoice } from '@/templates/multiple-choice';
 import { FillInBlank } from '@/templates/fill-in-blank';
 import { Matching } from '@/templates/matching';
+import { LabeledDiagram } from '@/templates/labeled-diagram';
+import { ComparisonGrid } from '@/templates/comparison-grid';
 import { GeneratedContent } from '@/lib/api/openai';
 import { ResolvedAsset } from '@/lib/assets/resolver';
 import { WorksheetType } from '@/types/worksheet';
@@ -77,6 +79,25 @@ export async function renderWorksheetToPdf(
       }) as React.ReactElement<DocumentProps>;
       break;
 
+    case 'labeled-diagram':
+      element = React.createElement(LabeledDiagram, {
+        content,
+        assets,
+        showAnswerKey: options?.showAnswerKey ?? true,
+        headerConfig: branding?.headerConfig,
+        footerConfig: branding?.footerConfig,
+      }) as React.ReactElement<DocumentProps>;
+      break;
+
+    case 'comparison-grid':
+      element = React.createElement(ComparisonGrid, {
+        content,
+        showAnswerKey: options?.showAnswerKey ?? true,
+        headerConfig: branding?.headerConfig,
+        footerConfig: branding?.footerConfig,
+      }) as React.ReactElement<DocumentProps>;
+      break;
+
     default:
       throw new Error(`Template not implemented: ${worksheetType}`);
   }
@@ -90,7 +111,7 @@ export async function renderWorksheetToPdf(
  * Get supported template types
  */
 export function getSupportedTemplates(): WorksheetType[] {
-  return ['vocabulary-cards', 'multiple-choice', 'fill-in-blank', 'matching'];
+  return ['vocabulary-cards', 'multiple-choice', 'fill-in-blank', 'matching', 'labeled-diagram', 'comparison-grid'];
 }
 
 /**

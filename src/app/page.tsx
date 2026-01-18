@@ -219,7 +219,8 @@ export default function Home() {
                   <option value="multiple-choice">✅ Multiple Choice Quiz</option>
                   <option value="fill-in-blank">✏️ Fill in the Blank</option>
                   <option value="matching">🔗 Matching</option>
-                  <option value="labeled-diagram" disabled>🏷️ Labeled Diagram (coming soon)</option>
+                  <option value="labeled-diagram">🏷️ Labeled Diagram</option>
+                  <option value="comparison-grid">📊 Comparison Chart</option>
                 </select>
               </div>
             </div>
