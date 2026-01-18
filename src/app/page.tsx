@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
+import { subjects, getAllGrades, buildTopicString, type TopicItem } from '@/lib/data/curriculum-topics';
 
 // Branding configuration state
 interface BrandingState {
@@ -34,9 +35,62 @@ const defaultBranding: BrandingState = {
 };
 
 export default function Home() {
-  const [topic, setTopic] = useState('Parts of a Flower');
+  // Curriculum selection state
   const [gradeLevel, setGradeLevel] = useState('3');
+  const [subjectId, setSubjectId] = useState('science');
+  const [selectedTopicId, setSelectedTopicId] = useState('plant-parts');
+  const [customTopic, setCustomTopic] = useState('');
+  const [useCustomTopic, setUseCustomTopic] = useState(false);
+  
   const [worksheetType, setWorksheetType] = useState('vocabulary-cards');
+  
+  // Get filtered topics based on grade and subject
+  const filteredTopics = useMemo(() => {
+    const subject = subjects.find(s => s.id === subjectId);
+    if (!subject) return [];
+    return subject.topics.filter(topic => topic.grades.includes(gradeLevel));
+  }, [gradeLevel, subjectId]);
+  
+  // Get the current topic object
+  const currentTopic = useMemo(() => {
+    return filteredTopics.find(t => t.id === selectedTopicId);
+  }, [filteredTopics, selectedTopicId]);
+  
+  // Build the final topic string for the API
+  const topic = useMemo(() => {
+    if (useCustomTopic && customTopic.trim()) {
+      return customTopic.trim();
+    }
+    if (currentTopic) {
+      return buildTopicString(currentTopic, gradeLevel);
+    }
+    return 'General Topic';
+  }, [useCustomTopic, customTopic, currentTopic, gradeLevel]);
+  
+  // Reset topic selection when grade or subject changes
+  const handleGradeChange = (newGrade: string) => {
+    setGradeLevel(newGrade);
+    // Find a valid topic for the new grade
+    const subject = subjects.find(s => s.id === subjectId);
+    if (subject) {
+      const validTopics = subject.topics.filter(t => t.grades.includes(newGrade));
+      if (validTopics.length > 0 && !validTopics.find(t => t.id === selectedTopicId)) {
+        setSelectedTopicId(validTopics[0].id);
+      }
+    }
+  };
+  
+  const handleSubjectChange = (newSubject: string) => {
+    setSubjectId(newSubject);
+    // Select first topic in new subject for current grade
+    const subject = subjects.find(s => s.id === newSubject);
+    if (subject) {
+      const validTopics = subject.topics.filter(t => t.grades.includes(gradeLevel));
+      if (validTopics.length > 0) {
+        setSelectedTopicId(validTopics[0].id);
+      }
+    }
+  };
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -171,19 +225,7 @@ export default function Home() {
           <h2 className="text-xl font-semibold mb-4">Create a Worksheet</h2>
           
           <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Topic
-              </label>
-              <input
-                type="text"
-                value={topic}
-                onChange={(e) => setTopic(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="e.g., Parts of a Flower, Solar System, Butterfly Life Cycle"
-              />
-            </div>
-
+            {/* Grade Level Selection */}
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -191,38 +233,97 @@ export default function Home() {
                 </label>
                 <select
                   value={gradeLevel}
-                  onChange={(e) => setGradeLevel(e.target.value)}
+                  onChange={(e) => handleGradeChange(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
-                  <option value="K">Kindergarten</option>
-                  <option value="1">1st Grade</option>
-                  <option value="2">2nd Grade</option>
-                  <option value="3">3rd Grade</option>
-                  <option value="4">4th Grade</option>
-                  <option value="5">5th Grade</option>
-                  <option value="6">6th Grade</option>
-                  <option value="7">7th Grade</option>
-                  <option value="8">8th Grade</option>
+                  {getAllGrades().map(grade => (
+                    <option key={grade.value} value={grade.value}>{grade.label}</option>
+                  ))}
                 </select>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Worksheet Type
+                  Subject
                 </label>
                 <select
-                  value={worksheetType}
-                  onChange={(e) => setWorksheetType(e.target.value)}
+                  value={subjectId}
+                  onChange={(e) => handleSubjectChange(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
-                  <option value="vocabulary-cards">📝 Vocabulary Cards</option>
-                  <option value="multiple-choice">✅ Multiple Choice Quiz</option>
-                  <option value="fill-in-blank">✏️ Fill in the Blank</option>
-                  <option value="matching">🔗 Matching</option>
-                  <option value="labeled-diagram">🏷️ Labeled Diagram</option>
-                  <option value="comparison-grid">📊 Comparison Chart</option>
+                  {subjects.map(subject => (
+                    <option key={subject.id} value={subject.id}>
+                      {subject.icon} {subject.name}
+                    </option>
+                  ))}
                 </select>
               </div>
+            </div>
+
+            {/* Topic Selection */}
+            <div>
+              <div className="flex justify-between items-center mb-1">
+                <label className="block text-sm font-medium text-gray-700">
+                  Topic
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setUseCustomTopic(!useCustomTopic)}
+                  className="text-xs text-blue-600 hover:text-blue-800"
+                >
+                  {useCustomTopic ? '← Back to topic list' : 'Enter custom topic'}
+                </button>
+              </div>
+              
+              {useCustomTopic ? (
+                <input
+                  type="text"
+                  value={customTopic}
+                  onChange={(e) => setCustomTopic(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter any topic, e.g., 'Ancient Egyptian pyramids'"
+                />
+              ) : (
+                <select
+                  value={selectedTopicId}
+                  onChange={(e) => setSelectedTopicId(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  {filteredTopics.length > 0 ? (
+                    filteredTopics.map(t => (
+                      <option key={t.id} value={t.id}>{t.name}</option>
+                    ))
+                  ) : (
+                    <option value="">No topics available for this grade</option>
+                  )}
+                </select>
+              )}
+              
+              {/* Topic Preview */}
+              {!useCustomTopic && currentTopic && (
+                <p className="mt-1 text-xs text-gray-500">
+                  Keywords: {currentTopic.keywords}
+                </p>
+              )}
+            </div>
+
+            {/* Worksheet Type */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Worksheet Type
+              </label>
+              <select
+                value={worksheetType}
+                onChange={(e) => setWorksheetType(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="vocabulary-cards">📝 Vocabulary Cards</option>
+                <option value="multiple-choice">✅ Multiple Choice Quiz</option>
+                <option value="fill-in-blank">✏️ Fill in the Blank</option>
+                <option value="matching">🔗 Matching</option>
+                <option value="labeled-diagram">🏷️ Labeled Diagram</option>
+                <option value="comparison-grid">📊 Comparison Chart</option>
+              </select>
             </div>
 
             {/* Branding/Customization Section */}
@@ -432,11 +533,9 @@ export default function Home() {
         )}
 
         <div className="mt-8 text-center text-sm text-gray-500">
-          <p>Phase 5: First Template - Vocabulary Cards ✅</p>
+          <p>📚 {subjects.length} subjects • {subjects.reduce((acc, s) => acc + s.topics.length, 0)}+ topics • K-8 curriculum aligned</p>
           <p className="mt-1">
-            API Endpoints: 
-            <code className="mx-1 px-1 bg-gray-100 rounded">/api/generate</code>
-            <code className="mx-1 px-1 bg-gray-100 rounded">/api/pdf</code>
+            Templates: Vocabulary Cards • Multiple Choice • Fill-in-Blank • Matching • Labeled Diagram • Comparison Chart
           </p>
         </div>
       </div>
